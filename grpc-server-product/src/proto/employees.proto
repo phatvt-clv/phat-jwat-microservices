@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package employees;
+
+service EmployeeService {
+  rpc getEmployeeById (EmployeeId) returns (ResponseEmployee) {}
+  rpc getAllEmployees (SearchEmployeeDto) returns (ResponseListEmployee) {}
+  rpc createEmployee (CreateEmployeeDto) returns (ResponseEmployee) {}
+  rpc updateEmployee (UpdateEmployeeDto) returns (ResponseEmployee) {}
+  rpc deleteEmployee (EmployeeId) returns (ResponseEmployee) {}
+}
+
+message EmployeeId {
+  string employeeId = 1;
+}
+
+message CreateEmployeeDto {
+  string name = 1;
+  string email = 2;
+  optional google.protobuf.Timestamp birthday = 3;
+  optional string address = 4;
+  optional int32 allowance = 5;
+  optional string phone = 6;
+  optional string gender = 7;
+}
+
+message UpdateEmployeeDto {
+  string employeeId = 1;
+  optional string name = 2;
+  optional string email = 3;
+  optional google.protobuf.Timestamp birthday = 4;
+  optional string address = 5;
+  optional int32 allowance = 6;
+  optional string phone = 7;
+  optional string gender = 8;
+}
+
+message SearchEmployeeDto {
+  optional string employeeId = 1;
+  optional string name = 2;
+  optional string email = 3;
+}
+
+message Employee {
+  string employeeId = 1;
+  string name = 2;
+  string email = 3;
+  google.protobuf.Timestamp birthday = 4;
+  string address = 5;
+  int32 allowance = 6;
+  string phone = 7;
+  string gender = 8;
+  google.protobuf.Timestamp createdAt = 9;
+  google.protobuf.Timestamp deletedAt = 10;
+  google.protobuf.Timestamp updatedAt = 11;
+}
+
+message AllEmployees {
+  repeated Employee employees = 1;
+  optional int32 length = 2;
+}
+
+message ResponseEmployee {
+  int32 code = 1;
+  optional string message = 2;
+  Employee data = 3;
+}
+
+message ResponseListEmployee {
+  int32 code = 1;
+  optional string message = 2;
+  repeated Employee data = 3;
+}
