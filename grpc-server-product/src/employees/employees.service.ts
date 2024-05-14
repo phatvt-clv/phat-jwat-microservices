@@ -4,15 +4,15 @@ import { ILike, Repository } from "typeorm";
 import { Employee } from "./employee.entity";
 import { validate as isValidUUID } from "uuid";
 import {
-  CreateEmployeeDto,
-  ResponseEmployee,
-  ResponseListEmployee,
-  UpdateEmployeeDto,
-} from "src/proto/employees";
-import {
   EMPLOYEE_ERROR_MESSAGE,
   EMPLOYEE_MESSAGE,
 } from "src/common/employees.message";
+import {
+  CreateEmployee,
+  ResponseEmployee,
+  ResponseListEmployee,
+  UpdateEmployee,
+} from "clt-jwat-common";
 
 @Injectable()
 export class EmployeesService {
@@ -38,7 +38,7 @@ export class EmployeesService {
   }
 
   async createEmployee(
-    createEmployeeDto: CreateEmployeeDto,
+    createEmployeeDto: CreateEmployee,
   ): Promise<ResponseEmployee> {
     const checkEmployee = await this.employeeRepository.findOne({
       where: { email: createEmployeeDto.email },
@@ -59,13 +59,11 @@ export class EmployeesService {
   }
 
   async getAllEmployees(
-    employeeId?: string,
     email?: string,
     name?: string,
   ): Promise<ResponseListEmployee> {
-    const conditions: { employeeId?: any; email?: any; name?: any } = {};
+    const conditions: { email?: any; name?: any } = {};
 
-    if (employeeId) conditions.employeeId = employeeId;
     if (email) conditions.email = ILike(`%${email}%`);
     if (name) conditions.name = ILike(`%${name}%`);
 
@@ -88,7 +86,7 @@ export class EmployeesService {
 
     if (!employee)
       return this.buildResponse(
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
         EMPLOYEE_ERROR_MESSAGE.NOT_FOUND,
         null,
       );
@@ -96,7 +94,7 @@ export class EmployeesService {
     return this.buildResponse(200, "Success", employee);
   }
 
-  async updateEmployee(request: UpdateEmployeeDto): Promise<ResponseEmployee> {
+  async updateEmployee(request: UpdateEmployee): Promise<ResponseEmployee> {
     if (!isValidUUID(request.employeeId))
       return this.buildResponse(
         HttpStatus.BAD_REQUEST,
@@ -155,6 +153,7 @@ export class EmployeesService {
     }
 
     await this.employeeRepository.softDelete(employeeId);
+    employee.deletedAt = new Date();
     return this.buildResponse(200, EMPLOYEE_MESSAGE.DELETED, employee);
   }
 }

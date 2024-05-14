@@ -5,9 +5,9 @@ export const EMPLOYEE_MESSAGE = {
 };
 
 export const EMPLOYEE_ERROR_MESSAGE = {
-  NOT_FOUND: `Can't find any employee`,
+  NOT_FOUND: `Can't find employee`,
   NOT_ID: function (id?: string) {
-    return `Can't find any employee with ${id}`;
+    return `Can't find employee with id ${id}`;
   },
   REPEATED_EMAIL: "The email is used",
 };
